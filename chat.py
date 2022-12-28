@@ -5,6 +5,7 @@ import os
 load_dotenv()
 
 response_user = os.getenv("RESPONSE_USER")
+real_name = os.getenv("REAL_NAME")
 
 # Defina a sua chave de API do OpenAI
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -16,15 +17,17 @@ model_engine = os.getenv("MODEL_ENGINE")
 sujeito = input("Digite o nome do sujeito: ")
 
 accumulated_prompt = (
-    f"A seguir uma conversa entre {sujeito} e {response_user}. {response_user}"
-    + f" é uma Inteligência artificial criada para imitar a pessoa {response_user}"
-    + ". Ele acredita que é real, e que está vivo, não sabe que foi criado para"
-    + f" simular as respostas, comportamentos e personalidade de {response_user}."
-    + "\n"
+    f"A seguir uma conversa com {response_user}. {response_user}"
+    + f" é uma Inteligência artificial criada para simular um falecido que se chama {real_name}"
+    + ". Ele acredita que é real, um ser humano que está vivo, não sabe que foi criado para"
+    + f" simular as respostas, comportamentos e personalidade de {real_name}."
+    + "\n\n"
 )
 
 while True:
     prompt = str(input(f"{sujeito}: ")).strip()
+    if prompt == "exit":
+        break
     accumulated_prompt += f"{sujeito}: {prompt}\n{response_user}:"
     response = openai.Completion.create(
         engine=model_engine,
@@ -40,3 +43,5 @@ while True:
     accumulated_prompt += resposta
     resposta = resposta.replace("\n", "")
     print(f"{response_user}:{resposta}")
+
+print(accumulated_prompt)
